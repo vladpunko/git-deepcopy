@@ -8,8 +8,9 @@ import logging
 import sys
 from importlib.metadata import version
 
-from git_backupper import api, defaults, exceptions, settings
+from git_backupper import api, defaults, exceptions, logger_wrapper, settings
 
+logger_wrapper.setup()  # Set up the logging system.
 logger = logging.getLogger(__name__)
 
 
