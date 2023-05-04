@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "git-backupper"
+authors = [
+    {name = "Vladislav Punko", email = "iam.vlad.punko@gmail.com"},
+]
+description = "Simplest way to backup and restore git repositories"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["automation", "git"]
+license = {text = "MIT"}
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Issue tracker" = "https://github.com/vladpunko/git-backupper/issues"
+"Source code" = "https://github.com/vladpunko/git-backupper"
+
+[project.optional-dependencies]
+dev = ["black>=22.0.0", "ruff>=0.0.250", "mypy>=v0.950", "pre-commit>=3.0.0"]
+test = ["tox>=4.0.0"]
+
+[project.scripts]
+git-backupper = "git_backupper.__main__:main"
+
+[tool.mypy]
+exclude = ["tests"]
+strict = true
+
+[tool.coverage.report]
+exclude_lines = ["@abc.abstractmethod"]
+
+[tool.coverage.run]
+omit = ["git_backupper/__main__.py"]
+parallel = true
+source = ["git_backupper"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310", "py311"]
+
+[tool.ruff]
+line-length = 100
+select = ["B", "C", "E", "F", "I", "W"]
