@@ -1,6 +1,17 @@
 # Copyright 2023 (c) Vladislav Punko <iam.vlad.punko@gmail.com>
 
-__all__ = ["FileSystemError", "SettingsError"]
+import subprocess
+
+__all__ = ["ExternalProcessError", "FileSystemError", "SettingsError"]
+
+
+class ExternalProcessError(subprocess.SubprocessError):
+    """This custom exception class should be used to represent any errors that are
+    encountered when attempting to execute an external process.
+
+    This exception is used to represent all errors related to errors during
+    execution of external processes, such as command line utilities or system tools.
+    """
 
 
 class FileSystemError(OSError):
