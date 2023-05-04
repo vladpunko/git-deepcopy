@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Simplest way to backup and restore git repositories."
+        description="Simplest way to back up and restore git repositories."
     )
     parser.add_argument("-v", "--version", action="version", version=version("git-backupper"))
     parser.add_argument(

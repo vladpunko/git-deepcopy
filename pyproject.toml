@@ -40,15 +40,14 @@ test = ["tox>=4.0.0"]
 [project.scripts]
 git-backupper = "git_backupper.__main__:main"
 
-[tool.mypy]
-exclude = ["tests"]
-strict = true
+[tool.setuptools_scm]
+version_scheme = "post-release"
 
 [tool.coverage.report]
 exclude_lines = ["@abc.abstractmethod"]
 
 [tool.coverage.run]
-omit = ["git_backupper/__main__.py"]
+omit = ["git_backupper/__main__.py", "git_backupper/logger_wrapper.py"]
 parallel = true
 source = ["git_backupper"]
 

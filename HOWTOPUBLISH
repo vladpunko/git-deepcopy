@@ -1,0 +1,7 @@
+# update the source code and etc
+tox
+# create a new version tag: git tag --annotate <version> --message <message>
+python3 -m pip install --upgrade build twine
+python3 -m build
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+twine upload dist/*
