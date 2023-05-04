@@ -1,0 +1,25 @@
+---
+repos:
+  # Set the list of basic git hooks to find and fix common problems in the current working tree.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-executables-have-shebangs
+      - id: check-yaml
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  # Use the static code checker to find and fix logical errors in python source code.
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.254
+    hooks:
+      - id: ruff
+        language_version: python3
+
+  # The static type checker can be used to identify and locate errors in a program prior to its execution.
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.0.1
+    hooks:
+      - id: mypy
+        language_version: python3
