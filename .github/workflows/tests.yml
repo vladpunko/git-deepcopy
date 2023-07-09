@@ -1,4 +1,4 @@
-name: python tests
+name: python testing and linting
 
 on:
   push:
@@ -26,4 +26,4 @@ jobs:
         run: pip3 install --upgrade pip && pip3 install --no-cache-dir --upgrade tox
 
       - name: Step -- 4.
-        run: tox
+        run: tox && tox -e lint

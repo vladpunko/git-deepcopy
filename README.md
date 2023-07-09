@@ -50,7 +50,7 @@ git-backupper  # back up all repositories from the configuration file
 cd /tmp/backup_repositories/git-backupper.git
 
 # Step -- 3.
-git push --mirror 'https://github.com/vladpunko/git-backupper.git'
+git push --mirror https://github.com/vladpunko/git-backupper.git
 ```
 
 ## Contributing

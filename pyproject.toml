@@ -34,7 +34,7 @@ dynamic = ["version"]
 "Source code" = "https://github.com/vladpunko/git-backupper"
 
 [project.optional-dependencies]
-dev = ["black>=22.0.0", "ruff>=0.0.250", "mypy>=v0.950", "pre-commit>=3.0.0"]
+dev = ["black>=23.0.0", "isort>=5.0.0", "pre-commit>=3.0.0"]
 test = ["tox>=4.0.0"]
 
 [project.scripts]
@@ -55,6 +55,5 @@ source = ["git_backupper"]
 line-length = 100
 target-version = ["py39", "py310", "py311"]
 
-[tool.ruff]
-line-length = 100
-select = ["B", "C", "E", "F", "I", "W"]
+[tool.isort]
+profile = "black"
