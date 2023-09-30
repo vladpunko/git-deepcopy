@@ -5,7 +5,7 @@ import collections.abc
 import pathlib
 import typing
 
-from git_backupper import exceptions
+from git_mirrors import exceptions
 
 __all__ = ["PathField", "SequenceField"]
 
@@ -14,10 +14,10 @@ _V = typing.TypeVar("_V")
 
 
 class _Field(abc.ABC, typing.Generic[_V, _T]):
-    def __set_name__(self, owner: type[typing.Any], name: str) -> None:
+    def __set_name__(self, owner: typing.Type[typing.Any], name: str) -> None:
         self.name = name
 
-    def __get__(self, instance: typing.Any, owner: type[typing.Any]) -> _T:
+    def __get__(self, instance: typing.Any, owner: typing.Type[typing.Any]) -> _T:
         if instance is None:
             return self  # type: ignore
 
@@ -36,7 +36,7 @@ class PathField(_Field[typing.Union[str, pathlib.Path], pathlib.Path]):
     def process_value(self, value: typing.Union[str, pathlib.Path]) -> pathlib.Path:
         if not isinstance(value, (str, pathlib.Path)):
             raise exceptions.SettingsError(
-                f"Path must be string, but received: {type(value).__name__}."
+                f"Path must be string, but received: {type(value).__name__!s}."
             )
 
         if not value:
@@ -45,8 +45,8 @@ class PathField(_Field[typing.Union[str, pathlib.Path], pathlib.Path]):
         return pathlib.Path(value).expanduser()
 
 
-class SequenceField(_Field[typing.Iterable[str], list[str]]):
-    def process_value(self, value: typing.Iterable[str]) -> list[str]:
+class SequenceField(_Field[typing.Iterable[str], typing.List[str]]):
+    def process_value(self, value: typing.Iterable[str]) -> typing.List[str]:
         if not isinstance(value, collections.abc.Sequence) or isinstance(value, (bytes, str)):
             raise exceptions.SettingsError(
                 "The data required for a list field must be inputted as a sequence or array."

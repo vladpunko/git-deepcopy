@@ -5,10 +5,10 @@ import logging
 import pathlib
 import typing
 
-from git_backupper import defaults, exceptions
-from git_backupper.settings import fields
+from git_mirrors import defaults, exceptions
+from git_mirrors.settings import fields
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("git_mirrors")
 
 __all__ = ["Settings"]
 
@@ -17,20 +17,21 @@ _T = typing.TypeVar("_T", bound="Settings")
 
 class Settings:
     # schema
-    backup_path = fields.PathField()  # Path
     repositories = fields.SequenceField()  # List[str]
+    storage_path = fields.PathField()  # Path
 
     def __init__(
         self,
-        repositories: list[str],
-        backup_path: typing.Union[str, pathlib.Path] = defaults.BACKUP_DIRECTORY_PATH,
+        repositories: typing.List[str],
+        storage_path: typing.Union[str, pathlib.Path] = defaults.STORAGE_PATH,
     ) -> None:
-        self.backup_path = backup_path
         self.repositories = repositories
+        self.storage_path = storage_path
 
     @classmethod
     def from_json(
-        cls: type[_T], path: typing.Union[str, pathlib.Path] = defaults.SETTINGS_PATH
+        cls: typing.Type[_T],
+        path: typing.Union[str, pathlib.Path] = defaults.SETTINGS_PATH,
     ) -> _T:
         try:
             with pathlib.Path(path).expanduser().open(encoding="utf-8") as stream_in:
@@ -48,7 +49,7 @@ class Settings:
             ) from err
 
         # Ensure that the settings conform to the expected schema before using them.
-        if not {"repositories"} <= set(settings.keys()) <= {"backup_path", "repositories"}:
+        if not {"repositories"} <= set(settings.keys()) <= {"storage_path", "repositories"}:
             raise exceptions.SettingsError("File does not match expected schema.")
 
         return cls(**settings)
@@ -59,8 +60,8 @@ class Settings:
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__name__}"
-            f"(repositories={self.repositories}, backup_path={str(self.backup_path)!r})"
+            f"(repositories={self.repositories}, storage_path={str(self.storage_path)!r})"
         )
 
-    def to_dict(self) -> dict[str, typing.Union[pathlib.Path, list[str]]]:
+    def to_dict(self) -> typing.Dict[str, typing.Union[pathlib.Path, typing.List[str]]]:
         return self.__dict__

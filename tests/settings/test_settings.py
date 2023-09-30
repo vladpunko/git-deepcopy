@@ -6,15 +6,8 @@ import pathlib
 
 import pytest
 
-from git_backupper import exceptions
-from git_backupper.settings import settings
-
-
-@pytest.fixture
-def backup_path():
-    path = pathlib.Path("~/directory")
-
-    return path
+from git_mirrors import exceptions
+from git_mirrors.settings import settings
 
 
 @pytest.fixture
@@ -23,39 +16,47 @@ def repositories():
 
 
 @pytest.fixture
-def settings_path(backup_path, repositories, fs):
-    path = pathlib.Path("settings.json")
-    path.write_text(json.dumps({"backup_path": str(backup_path), "repositories": repositories}))
+def storage_path():
+    path = pathlib.Path("~/directory")
 
     return path
 
 
 @pytest.fixture
-def settings_dict(backup_path, repositories):
-    return {"backup_path": backup_path.expanduser(), "repositories": repositories}
+def settings_path(repositories, storage_path, fs):
+    path = pathlib.Path("settings.json")
+    path.write_text(json.dumps({"repositories": repositories, "storage_path": str(storage_path)}))
+
+    return path
 
 
-def test_settings_class(backup_path, repositories, settings_dict):
-    test_settings = settings.Settings(repositories=repositories * 5, backup_path=backup_path)
+@pytest.fixture
+def settings_dict(repositories, storage_path):
+    return {"repositories": repositories, "storage_path": storage_path.expanduser()}
 
-    assert str(test_settings.backup_path) == str(backup_path.expanduser())
+
+def test_settings_class(repositories, storage_path, settings_dict):
+    test_settings = settings.Settings(repositories=repositories * 5, storage_path=storage_path)
+
+    assert str(test_settings.storage_path) == str(storage_path.expanduser())
     assert test_settings.repositories == repositories
+
     assert str(test_settings) == json.dumps(settings_dict, default=str, indent=2)
     assert repr(test_settings) == (
-        f"Settings(repositories={repositories}, backup_path={str(backup_path.expanduser())!r})"
+        f"Settings(repositories={repositories}, storage_path={str(storage_path.expanduser())!r})"
     )
 
 
-def test_settings_to_dict(backup_path, repositories, settings_dict):
-    test_settings = settings.Settings(repositories=repositories, backup_path=backup_path)
+def test_settings_to_dict(repositories, storage_path, settings_dict):
+    test_settings = settings.Settings(repositories=repositories, storage_path=storage_path)
 
     assert test_settings.to_dict() == settings_dict
 
 
-def test_load_settings_from_json(backup_path, repositories, settings_path):
+def test_load_settings_from_json(repositories, storage_path, settings_path):
     test_settings = settings.Settings.from_json(settings_path)
 
-    assert str(test_settings.backup_path) == str(backup_path.expanduser())
+    assert str(test_settings.storage_path) == str(storage_path.expanduser())
     assert test_settings.repositories == repositories
 
 

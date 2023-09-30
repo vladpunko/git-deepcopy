@@ -2,7 +2,7 @@
 repos:
   # Set the list of basic git hooks to find and fix common problems in the current working tree.
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: f71fa2c1f9cf5cb705f73dffe4b21f7c61470ba9
     hooks:
       - id: check-executables-have-shebangs
       - id: check-yaml
@@ -12,27 +12,27 @@ repos:
 
   # Apply the code formatting tool to maintain a consistent style across the code base.
   - repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: e87737140f32d3cd7c44ede75f02dcd58e55820e
     hooks:
       - id: black
         language_version: python3
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 6dfb85379703e7e99834ffc9dc9c05942a202532
     hooks:
       - id: isort
         language_version: python3
 
   # Use the static code checker to find and fix logical errors in python source code.
   - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
+    rev: b9a7794c4f425ef8419081e6993f99419cc667ea
     hooks:
       - id: flake8
         language_version: python3
 
   # The static type checker can be used to identify and locate errors in a program prior to its execution.
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.0.1
+    rev: 08cbc46b6e135adec84911b20e98e5bc52032152
     hooks:
       - id: mypy
         language_version: python3

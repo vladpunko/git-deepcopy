@@ -5,12 +5,18 @@ import io
 import logging
 import pathlib
 import shutil
+import typing
 
-from git_backupper import exceptions
+from git_mirrors import exceptions
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("git_mirrors")
 
-__all__ = ["calculate_checksum", "calculate_checksums", "create_directory", "remove_directory"]
+__all__ = [
+    "calculate_checksum",
+    "calculate_checksums",
+    "create_directory",
+    "remove_directory",
+]
 
 
 def calculate_checksum(path: pathlib.Path, buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> str:
@@ -35,11 +41,11 @@ def calculate_checksum(path: pathlib.Path, buffer_size: int = io.DEFAULT_BUFFER_
     return hash_func.hexdigest()
 
 
-def calculate_checksums(path: pathlib.Path) -> dict[pathlib.Path, str]:
+def calculate_checksums(path: pathlib.Path) -> typing.Dict[pathlib.Path, str]:
     """Calculate the checksums of all files in the provided directory path and its
     associated subdirectories on the current working machine.
     """
-    checksums: dict[pathlib.Path, str] = {}
+    checksums: typing.Dict[pathlib.Path, str] = {}
 
     for item in path.glob("**/*"):
         if not item.is_file():

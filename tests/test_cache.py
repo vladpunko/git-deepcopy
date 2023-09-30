@@ -6,7 +6,7 @@ import pickle
 
 import pytest
 
-from git_backupper import cache, exceptions
+from git_mirrors import cache, exceptions
 
 
 def test_cache_save(checksums, file_path):

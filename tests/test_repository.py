@@ -5,12 +5,12 @@ import reprlib
 
 import pytest
 
-from git_backupper import exceptions, repository
+from git_mirrors import exceptions, repository
 
 
 @pytest.fixture
 def repository_url():
-    return "https://github.com/vladpunko/git-backupper"
+    return "https://github.com/vladpunko/git-mirrors"
 
 
 def test_repository_class(directory_path, repository_url):
@@ -27,18 +27,21 @@ def test_repository_class(directory_path, repository_url):
 def test_repository_to_dict(directory_path, repository_url):
     test_repository = repository.Repository(local_path=directory_path, url=repository_url)
 
-    assert test_repository.to_dict() == {"local_path": directory_path, "url": repository_url}
+    assert test_repository.to_dict() == {
+        "local_path": directory_path,
+        "url": repository_url,
+    }
 
 
 def test_repository_from_url(directory_path, repository_url):
     test_repository = repository.Repository.from_url(parent_path=directory_path, url=repository_url)
 
-    assert test_repository.local_path == directory_path / "git-backupper.git"
+    assert test_repository.local_path == directory_path / "git-mirrors.git"
     assert test_repository.url == repository_url
 
 
 def test_repository_create_local_copy(mocker, directory_path, repository_url):
-    git_run_command_mock = mocker.patch("git_backupper.repository._run_git_command")
+    git_run_command_mock = mocker.patch("git_mirrors.repository._run_git_command")
 
     test_repository = repository.Repository(local_path=directory_path, url=repository_url)
     test_repository.create_local_copy()
@@ -49,7 +52,7 @@ def test_repository_create_local_copy(mocker, directory_path, repository_url):
 
 
 def test_repository_update_local_copy(mocker, directory_path, repository_url):
-    git_run_command_mock = mocker.patch("git_backupper.repository._run_git_command")
+    git_run_command_mock = mocker.patch("git_mirrors.repository._run_git_command")
 
     test_repository = repository.Repository(local_path=directory_path, url=repository_url)
     test_repository.update_local_copy()
@@ -60,7 +63,7 @@ def test_repository_update_local_copy(mocker, directory_path, repository_url):
 
 
 def test_repository_exists_locally(mocker, directory_path, repository_url):
-    git_run_command_mock = mocker.patch("git_backupper.repository._run_git_command")
+    git_run_command_mock = mocker.patch("git_mirrors.repository._run_git_command")
 
     test_repository = repository.Repository(local_path=directory_path, url=repository_url)
     test_repository.exists_locally()
@@ -79,7 +82,7 @@ def test_repository_not_exists_locally(directory_path, repository_url):
 
 
 def test_repository_exists_on_remote(mocker, directory_path, repository_url):
-    git_run_command_mock = mocker.patch("git_backupper.repository._run_git_command")
+    git_run_command_mock = mocker.patch("git_mirrors.repository._run_git_command")
 
     test_repository = repository.Repository(local_path=directory_path, url=repository_url)
     test_repository.exists_on_remote()

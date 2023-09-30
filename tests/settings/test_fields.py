@@ -4,8 +4,8 @@ import pathlib
 
 import pytest
 
-from git_backupper import exceptions
-from git_backupper.settings import fields
+from git_mirrors import exceptions
+from git_mirrors.settings import fields
 
 
 @pytest.fixture

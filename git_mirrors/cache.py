@@ -6,20 +6,20 @@ import pathlib
 import pickle
 import typing
 
-from git_backupper import defaults, exceptions
+from git_mirrors import defaults, exceptions
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("git_mirrors")
 
 __all__ = ["PersistentCache"]
 
 
-class PersistentCache(collections.UserDict[typing.Hashable, typing.Any]):
+class PersistentCache(collections.UserDict):  # type: ignore
     def __init__(self, path: typing.Union[str, pathlib.Path] = defaults.CACHE_PATH) -> None:
         super().__init__()
 
         self.path = pathlib.Path(path).expanduser()
 
-    def __enter__(self) -> dict[typing.Hashable, typing.Any]:
+    def __enter__(self) -> typing.Dict[typing.Hashable, typing.Any]:
         if self.path.is_file():
             self._load()
 

@@ -10,9 +10,9 @@ import subprocess
 import types
 import typing
 
-from git_backupper import exceptions
+from git_mirrors import exceptions
 
-GIT_COMMANDS: typing.Final[types.MappingProxyType[str, str]] = types.MappingProxyType(
+GIT_COMMANDS: typing.Final[typing.Mapping[str, str]] = types.MappingProxyType(
     {
         "clone": "git clone --mirror --no-hardlinks -- {0!r} {1!r}",
         "fetch": "git -C {0!r} fetch --all --verbose",
@@ -21,7 +21,7 @@ GIT_COMMANDS: typing.Final[types.MappingProxyType[str, str]] = types.MappingProx
     }
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("git_mirrors")
 
 __all__ = ["Repository"]
 
@@ -36,7 +36,7 @@ def _get_repository_name(url: str) -> str:
 
 
 def _run_git_command(command: str, silent: bool = False) -> None:
-    env: dict[str, str] = {
+    env: typing.Dict[str, str] = {
         # Disables the prompting of the git credential helper and avoids blocking
         # when the user is required to enter authentication credentials.
         "GIT_TERMINAL_PROMPT": "0",
@@ -60,7 +60,7 @@ class Repository:
     url: str
 
     @classmethod
-    def from_url(cls: type[_T], url: str, parent_path: pathlib.Path) -> _T:
+    def from_url(cls: typing.Type[_T], url: str, parent_path: pathlib.Path) -> _T:
         """This method allows creating a repository instance knowing only the repository
         storage path on the current working machine.
         """
@@ -95,7 +95,7 @@ class Repository:
 
         return True
 
-    def to_dict(self) -> dict[str, typing.Union[str, pathlib.Path]]:
+    def to_dict(self) -> typing.Dict[str, typing.Union[str, pathlib.Path]]:
         return dataclasses.asdict(self)
 
     def update_local_copy(self) -> None:

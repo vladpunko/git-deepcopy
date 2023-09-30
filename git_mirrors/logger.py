@@ -2,18 +2,19 @@
 
 import logging
 import logging.config
-import os
-import tempfile
+
+from git_mirrors import defaults
 
 __all__ = ["setup"]
 
 
-def setup(level: int = logging.WARNING) -> None:
+def setup(level: int = logging.INFO) -> None:
     logging.config.dictConfig(
         {
             "disable_existing_loggers": False,
             "formatters": {
                 "default": {
+                    "datefmt": "%Y-%m-%d--%H-%M-%S",
                     "format": "%(asctime)s - %(levelname)s :: %(name)s :: %(message)s",
                 },
             },
@@ -21,18 +22,20 @@ def setup(level: int = logging.WARNING) -> None:
                 "console": {
                     "class": "logging.StreamHandler",
                     "formatter": "default",
-                    "stream": "ext://sys.stdout",
+                    "stream": "ext://sys.stderr",
                 },
                 "logfile": {
-                    "class": "logging.FileHandler",
+                    "backupCount": 2,
+                    "class": "logging.handlers.RotatingFileHandler",
                     "encoding": "utf-8",
-                    "filename": os.path.join(tempfile.gettempdir(), "git-backupper.log"),
+                    "filename": defaults.LOGGING_PATH,
                     "formatter": "default",
+                    "maxBytes": 50 * 1024 * 1024,  # ~50 MB
                     "mode": "at",
                 },
             },
             "loggers": {
-                "": {
+                "git_mirrors": {
                     "handlers": ["console", "logfile"],
                     "level": level,
                 },

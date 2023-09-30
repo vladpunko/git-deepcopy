@@ -6,66 +6,66 @@ import pickle
 
 import pytest
 
-from git_backupper import api, repository
+from git_mirrors import api, repository
 
 
 @pytest.fixture
 def cache_path(tmp_path):
-    return tmp_path / ".git_backupper.pickle"
-
-
-@pytest.fixture
-def backup_path(tmp_path):
-    return tmp_path / ".backup_repositories"
+    return tmp_path / ".git_mirrors.pickle"
 
 
 @pytest.fixture
 def repositories():
     return [
-        "https://github.com/vladpunko/git-backupper",
-        "https://github.com/vladpunko/git-backupper",  # check for duplicates
+        "https://github.com/vladpunko/git-mirrors",
+        "https://github.com/vladpunko/git-mirrors",  # check for duplicates
     ]
 
 
-def test_backup(backup_path, cache_path, repositories):
-    test_repository = repository.Repository.from_url(parent_path=backup_path, url=repositories[0])
+@pytest.fixture
+def storage_path(tmp_path):
+    return tmp_path / ".repository_mirrors"
 
-    api.backup(backup_path, repositories, cache_path)  # run the backup process
+
+def test_mirror(cache_path, repositories, storage_path):
+    test_repository = repository.Repository.from_url(parent_path=storage_path, url=repositories[0])
+
+    api.mirror(repositories, storage_path, cache_path)  # run the mirror process
 
     assert test_repository.local_path.is_dir()
     assert test_repository in pickle.loads(cache_path.read_bytes())
-    assert os.listdir(backup_path) == [test_repository.local_path.name]
+    assert os.listdir(storage_path) == [test_repository.local_path.name]
 
 
-def test_backup_no_remote_repository(caplog, backup_path, cache_path):
+def test_mirror_no_remote_repository(caplog, cache_path, storage_path):
     test_repository = repository.Repository.from_url(
-        parent_path=backup_path, url="https://google.com"
+        parent_path=storage_path, url="https://google.com"
     )
 
     with caplog.at_level(logging.WARNING):
-        api.backup(backup_path, [test_repository.url], cache_path)
+        api.mirror([test_repository.url], storage_path, cache_path)
 
     message = f"The remote repository could not be detected for: {test_repository.url!r}."
     assert message in caplog.text
 
 
-def test_backup_corrupted_repository(caplog, backup_path, cache_path, repositories):
-    test_repository = repository.Repository.from_url(parent_path=backup_path, url=repositories[0])
+def test_mirror_corrupted_repository(caplog, cache_path, repositories, storage_path):
+    test_repository = repository.Repository.from_url(parent_path=storage_path, url=repositories[0])
 
-    api.backup(backup_path, repositories, cache_path)  # run the backup process
+    api.mirror(repositories, storage_path, cache_path)  # run the mirror process
 
     (test_repository.local_path / "FETCH_HEAD").unlink()
     with caplog.at_level(logging.WARNING):
-        api.backup(backup_path, repositories, cache_path)  # re-run the backup process
+        api.mirror(repositories, storage_path, cache_path)  # re-run the mirror process
 
     message = f"The {str(test_repository.local_path)!r} repository is corrupted."
     assert message in caplog.text
 
 
-def test_backup_directory_exists(backup_path, cache_path, repositories):
-    repository_path = backup_path / "git-backupper.git"
+def test_mirror_directory_exists(cache_path, repositories, storage_path):
+    repository_path = storage_path / "git-mirrors.git"
     repository_path.mkdir(parents=True)
 
-    api.backup(backup_path, repositories, cache_path)
+    api.mirror(repositories, storage_path, cache_path)
 
     assert repository_path.is_dir()

@@ -1,1 +1,3 @@
 include LICENSE README.md
+# ---
+include git_mirrors/git-make-mirror

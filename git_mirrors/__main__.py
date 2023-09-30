@@ -8,23 +8,22 @@ import logging
 import sys
 from importlib.metadata import version
 
-from git_backupper import api, defaults, exceptions, logger_wrapper, settings
+from git_mirrors import api, defaults, exceptions, settings
 
-logger_wrapper.setup()  # Set up the logging system.
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("git_mirror")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Simplest way to back up and restore git repositories."
+        description="Simplest way to mirror and restore git repositories."
     )
-    parser.add_argument("-v", "--version", action="version", version=version("git-backupper"))
+    parser.add_argument("-v", "--version", action="version", version=version("git_mirrors"))
     parser.add_argument(
         "-d",
         "--debug",
         action="store_const",
         const=logging.DEBUG,  # level must be an int or a str
-        default=logging.WARNING,
+        default=logging.INFO,
         dest="logging_level",
         help="generate extensive debugging output during command execution",
     )
@@ -40,7 +39,7 @@ def main() -> None:
         logger.warning(application_settings)
 
         # Step -- 2.
-        api.backup(application_settings.backup_path, application_settings.repositories)
+        api.mirror(application_settings.repositories, application_settings.storage_path)
     except (
         exceptions.ExternalProcessError,
         exceptions.FileSystemError,

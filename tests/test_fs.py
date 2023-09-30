@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from git_backupper import exceptions, fs
+from git_mirrors import exceptions, fs
 
 
 def test_create_directory(directory_path):
